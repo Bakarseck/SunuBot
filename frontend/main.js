@@ -3,6 +3,7 @@ const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const ytdl = require('ytdl-core');
+const axios = require('axios');  // Import axios pour envoyer les fichiers
 
 // Initialize client with persistent session
 const client = new Client({
@@ -39,35 +40,38 @@ client.on('reconnecting', () => {
 client.on('message_create', async (msg) => {
     console.log(`Message created: ${msg.body}`);
 
+    // Restreindre aux messages provenant de chats personnels uniquement
+    if (msg.from.includes('@g.us')) {
+        console.log("Message reçu d'un groupe, ignoré.");
+        return;
+    }
+
     try {
-        // Check for media files
-        if (msg.hasMedia) {
+        // Check if the message includes '#translate' to proceed with media handling
+        if (msg.hasMedia && msg.body.includes('#translate')) {
             try {
-                console.log("Media detected. Attempting to download...");
+                console.log("Media detected with #translate. Attempting to download...");
                 const media = await msg.downloadMedia();
                 console.log(`Media downloaded successfully: Type - ${msg.type}`);
 
-                if (msg.type === 'audio' || msg.type === 'ptt') { 
-                    console.log('Audio media detected (type audio or ptt)');
-                    const fileName = msg.type === 'audio' ? 'audio.ogg' : 'ptt_audio.ogg';
-                    fs.writeFileSync(fileName, media.data, 'base64');
-                    msg.reply(`Audio received and saved as ${fileName}.`);
-                    console.log(`Audio file saved as ${fileName}`);
-                } else if (msg.type === 'document' && msg.body.endsWith('.pdf')) {
-                    console.log('PDF document detected');
-                    fs.writeFileSync('document.pdf', media.data, 'base64');
-                    console.log('PDF file saved as document.pdf');
-                    await processPDF('document.pdf', msg);
-                } else {
-                    console.log(`Unhandled media type: ${msg.type}`);
-                    msg.reply("Media type not supported yet.");
-                }
+                // Traitement pour les types de fichiers
+                const fileName = `received_file.${media.mimetype.split('/')[1]}`;
+                fs.writeFileSync(fileName, media.data, 'base64');
+
+                // Envoyer le fichier à une API externe
+                await sendFileToAPI(fileName, media.mimetype);
+                msg.reply(`File ${fileName} received and sent to the API.`);
+
             } catch (error) {
                 console.error("Error during media handling:", error);
                 msg.reply("There was an error processing the media.");
             }
+        } else if (msg.hasMedia) {
+            console.log("Media received but ignored as it lacks #translate keyword.");
+            msg.reply("If you need this media processed, please include #translate in your message.");
         }
 
+        // Check for YouTube links
         if (msg.body.includes('youtube.com') || msg.body.includes('youtu.be')) {
             const url = msg.body.match(/(https?:\/\/[^\s]+)/g);
             if (url) {
@@ -86,25 +90,26 @@ client.on('message_create', async (msg) => {
     }
 });
 
-async function processPDF(filePath, msg) {
+// Function to send file to an API
+async function sendFileToAPI(filePath, mimeType) {
     try {
-        const dataBuffer = fs.readFileSync(filePath);
-        const pdfData = await pdfParse(dataBuffer);
-        const text = pdfData.text;
-        console.log(`PDF text extracted: ${text.slice(0, 100)}...`);
+        const fileData = fs.createReadStream(filePath);
 
-        if (msg.hasQuotedMsg) {
-            const quotedMsg = await msg.getQuotedMessage();
-            quotedMsg.reply('PDF processed. Here’s a preview:\n' + text + '...');
-        } else {
-            msg.reply('PDF processed. Here’s a preview:\n' + text + '...');
-        }
+        const response = await axios.post('http://localhost:3000', fileData, {
+            headers: {
+                'Content-Type': mimeType,
+            },
+            params: {
+                type: mimeType
+            }
+        });
+        console.log('File sent to API successfully:', response.data);
     } catch (error) {
-        console.error("Error processing PDF:", error);
-        msg.reply('Sorry, there was an error processing the PDF.');
+        console.error('Error sending file to API:', error.message);
     }
 }
 
+// Function to process YouTube link
 async function processYouTubeLink(url, msg) {
     try {
         if (ytdl.validateURL(url)) {
