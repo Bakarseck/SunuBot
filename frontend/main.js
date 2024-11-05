@@ -1,9 +1,10 @@
-const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js');
+const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
-const pdfParse = require('pdf-parse');
 const ytdl = require('ytdl-core');
-const axios = require('axios');  // Import axios pour envoyer les fichiers
+const axios = require('axios');
+const FormData = require('form-data');
+require('dotenv').config();
 
 // Initialize client with persistent session
 const client = new Client({
@@ -30,7 +31,7 @@ client.on('auth_failure', (msg) => {
 
 client.on('disconnected', (reason) => {
     console.log('Client disconnected:', reason);
-    client.initialize(); // Attempt to re-initialize on disconnection
+    client.initialize();
 });
 
 client.on('reconnecting', () => {
@@ -54,8 +55,11 @@ client.on('message_create', async (msg) => {
                 const media = await msg.downloadMedia();
                 console.log(`Media downloaded successfully: Type - ${msg.type}`);
 
-                // Traitement pour les types de fichiers
-                const fileName = `received_file.${media.mimetype.split('/')[1]}`;
+                // Extraire le numéro de téléphone du destinataire
+                const phoneNumber = msg.from.split('@')[0];
+                const fileExtension = media.mimetype.split('/')[1];
+                const fileName = `${phoneNumber}_received_file.${fileExtension}`;
+
                 fs.writeFileSync(fileName, media.data, 'base64');
 
                 // Envoyer le fichier à une API externe
@@ -94,35 +98,45 @@ client.on('message_create', async (msg) => {
 async function sendFileToAPI(filePath, mimeType) {
     try {
         const fileData = fs.createReadStream(filePath);
+        const form = new FormData();
 
-        const response = await axios.post('http://localhost:3000', fileData, {
+        // Append the file to the form
+        form.append('file', fileData, {
+            contentType: mimeType,
+            filename: filePath
+        });
+
+        const response = await axios.post('${process.env.BACKEND_API}/upload', form, {
             headers: {
-                'Content-Type': mimeType,
+                ...form.getHeaders(), // Include multipart/form-data headers
             },
             params: {
                 type: mimeType
             }
         });
+
         console.log('File sent to API successfully:', response.data);
     } catch (error) {
         console.error('Error sending file to API:', error.message);
     }
 }
 
-// Function to process YouTube link
+// Function to process YouTube link and send it to the API
 async function processYouTubeLink(url, msg) {
     try {
         if (ytdl.validateURL(url)) {
-            const info = await ytdl.getInfo(url);
-            const title = info.videoDetails.title;
-            console.log(`YouTube video title: ${title}`);
-            msg.reply(`Received YouTube link: ${title}`);
+            const response = await axios.post(`${process.env.BACKEND_API}/youtube`, {
+                url: url
+            });
+
+            console.log('YouTube link sent to API successfully:', response.data);
+            msg.reply(`YouTube link sent to the API for processing: ${url}`);
         } else {
             msg.reply('Invalid YouTube link.');
         }
     } catch (error) {
-        console.error('Error processing YouTube link:', error.message);
-        msg.reply('Sorry, I could not process this YouTube link. It might not be available.');
+        console.error('Error sending YouTube link to API:', error.message);
+        msg.reply('Sorry, I could not send this YouTube link to the API.');
     }
 }
 
