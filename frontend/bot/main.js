@@ -67,8 +67,7 @@ client.on('message_create', async (msg) => {
 
                 // Envoyer le fichier à une API externe
                 await sendFileToAPI(fileName, media.mimetype);
-                msg.reply(`File ${fileName} received and sent to the API.`);
-
+                msg.reply(`File ${fileName} received and sent to the API.\nSummary: ${apiResponse.summarized_text}`);
             } catch (error) {
                 console.error("Error during media handling:", error);
                 msg.reply("There was an error processing the media.");
@@ -109,7 +108,7 @@ async function sendFileToAPI(filePath, mimeType) {
             filename: filePath
         });
 
-        const response = await axios.post('${process.env.BACKEND_API}/upload', form, {
+        const response = await axios.post('${process.env.BACKEND_API}//model/upload/', form, {
             headers: {
                 ...form.getHeaders(), // Include multipart/form-data headers
             },
@@ -119,6 +118,7 @@ async function sendFileToAPI(filePath, mimeType) {
         });
 
         console.log('File sent to API successfully:', response.data);
+        return response.data; // Retourne la réponse de l'API (inclut le résumé et d'autres détails)
     } catch (error) {
         console.error('Error sending file to API:', error.message);
     }
