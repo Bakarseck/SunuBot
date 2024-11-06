@@ -108,7 +108,7 @@ async function sendFileToAPI(filePath, mimeType) {
             filename: filePath
         });
 
-        const response = await axios.post('${process.env.BACKEND_API}/  model/upload/', form, {
+        const response = await axios.post('${process.env.BACKEND_API}/model/upload/', form, {
             headers: {
                 ...form.getHeaders(), // Include multipart/form-data headers
             },
