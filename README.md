@@ -28,14 +28,14 @@ Whisper is a robust automatic speech recognition (ASR) system with the following
 - **Noise Tolerance**: Whisper performs well in noisy environments, ensuring accurate transcription even with background noise.  
 - **Robustness**: It can handle diverse accents, dialects, and languages, making it versatile for global use.  
 - **Model Size**: Whisper offers multiple model sizes (tiny, base, small, medium, large) to balance between speed and accuracy.  
-- **Documentation**: For more details, visit the [Whisper documentation](https://openai.com/whisper).  
+- **Documentation**: For more details, visit the [Whisper documentation](https://platform.openai.com/docs/guides/speech-to-text).  
 
 ### ChatGPT (OpenAI)  
 ChatGPT provides advanced natural language processing (NLP) capabilities, including:  
 - **Summarization**: It can generate concise summaries from large volumes of text.  
 - **Interactive Q&A**: Users can ask context-specific questions and get detailed responses.  
 - **Versatility**: ChatGPT supports various languages and can adapt to different tones and styles.  
-- **Documentation**: For more information, visit the [ChatGPT documentation](https://platform.openai.com/docs/models/gpt-4).  
+- **Documentation**: For more information, visit the [ChatGPT documentation](https://platform.openai.com/docs/guides/text-generation).  
 
 ## Prerequisites  
 - **Python** (version 3.10 or higher)  
@@ -49,3 +49,4 @@ ChatGPT provides advanced natural language processing (NLP) capabilities, includ
 1. Clone the repository:  
    ```bash  
    git clone https://github.com/Bakarseck/SunuBot.git
+  
