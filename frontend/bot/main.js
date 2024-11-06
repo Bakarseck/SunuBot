@@ -66,7 +66,7 @@ client.on('message_create', async (msg) => {
                 fs.writeFileSync(fileName, media.data, 'base64');
 
                 // Envoyer le fichier à une API externe
-                await sendFileToAPI(fileName, media.mimetype);
+                const apiResponse = await sendFileToAPI(fileName, media.mimetype);
                 msg.reply(`File ${fileName} received and sent to the API.\nSummary: ${apiResponse.summarized_text}`);
             } catch (error) {
                 console.error("Error during media handling:", error);
