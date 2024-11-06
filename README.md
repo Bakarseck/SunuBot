@@ -71,15 +71,15 @@ cd SunuBot
    fastapi run main.py
    ```
 
-### Frontend  
+### Frontend 
 1. Navigate to the frontend folder:  
    ```bash
    cd ../frontend
    ```
 
-2. Install the dependencies:  
+2. Navigate on the web and Install the dependencies:  
    ```bash
-   npm install
+   cd web && npm install
    ```
 
 3. Start the development server:  
@@ -123,5 +123,11 @@ cd SunuBot
 - **Frontend**: Visit [http://localhost:3000](http://localhost:3000).  
 - **Backend**: API available at [http://localhost:8000](http://localhost:8000).  
 - **Mobile App**: Test on an emulator or a connected device.  
-- **WhatsApp Bot**: Interact with the bot via your registered WhatsApp number.  
+- **WhatsApp Bot**: Interact with the bot via your registered WhatsApp number.
+
+- All feautures are all also available in the web.
+- **Frontend**: Visit [https://frontend-three-eta-42.vercel.app](https://frontend-three-eta-42.vercel.app).  
+- **Backend**: API available at [https://e-ceddo.com/model/upload](https://e-ceddo.com/model/upload).  
+- **Mobile App**: Can download the apk.  
+- **WhatsApp Bot**: Send message to Bakar SECK (76 277 32 66).
 
