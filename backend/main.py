@@ -24,7 +24,7 @@ transcribe_dir = Path("file_transcribed")
 upload_dir.mkdir(exist_ok=True)
 transcribe_dir.mkdir(exist_ok=True)
 
-@app.post("/upload/")
+@app.post("/model/upload/")
 async def upload_file(file: UploadFile = File(...)):
     # Check the file type (optional validation, customize as needed)
     valid_content_types = [
