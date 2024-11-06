@@ -44,9 +44,84 @@ ChatGPT provides advanced natural language processing (NLP) capabilities, includ
 - **FastAPI** (latest version)  
 
 ## Installation  
+Clone the repository:  
+```bash  
+git clone https://github.com/Bakarseck/SunuBot.git
+cd SunuBot
+```
+### Backend  
+1. Navigate to the backend folder:  
+   ```bash
+   cd backend
+   ```
 
-### Backend Setup  
-1. Clone the repository:  
-   ```bash  
-   git clone https://github.com/Bakarseck/SunuBot.git
-  
+2. Create and activate a virtual environment:  
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   ```
+
+3. Install the dependencies:  
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Start the FastAPI server:  
+   ```bash
+   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+   ```
+
+### Frontend  
+1. Navigate to the frontend folder:  
+   ```bash
+   cd ../frontend
+   ```
+
+2. Install the dependencies:  
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:  
+   ```bash
+   npm run dev
+   ```
+
+### Mobile Application  
+1. Navigate to the mobile folder:  
+   ```bash
+   cd ../mobile
+   ```
+
+2. Install Flutter dependencies:  
+   ```bash
+   flutter pub get
+   ```
+
+3. Run the mobile application:  
+   ```bash
+   flutter run
+   ```
+
+### WhatsApp Bot  
+1. Navigate to the WhatsApp bot folder:  
+   ```bash
+   cd ../whatsapp-bot
+   ```
+
+2. Install the dependencies:  
+   ```bash
+   npm install
+   ```
+
+3. Start the bot:  
+   ```bash
+   npm start
+   ```
+
+## Accessing the Platform  
+- **Frontend**: Visit [http://localhost:3000](http://localhost:3000).  
+- **Backend**: API available at [http://localhost:8000](http://localhost:8000).  
+- **Mobile App**: Test on an emulator or a connected device.  
+- **WhatsApp Bot**: Interact with the bot via your registered WhatsApp number.  
+
