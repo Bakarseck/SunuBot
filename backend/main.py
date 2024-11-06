@@ -82,6 +82,7 @@ async def upload_file(file: UploadFile = File(...)):
 
     # Génération du résumé
     try:
+        print(transcribed_file)
         summarized_text = summerize(str(transcribed_file))
     except Exception as e:
         print("Error summarizing text:", e)
