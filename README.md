@@ -130,4 +130,16 @@ cd SunuBot
 - **Backend**: API available at [https://e-ceddo.com/model/upload](https://e-ceddo.com/model/upload).  
 - **Mobile App**: Can download the apk.  
 - **WhatsApp Bot**: Send message to Bakar SECK (76 277 32 66).
+- to use whatsApp bot messager, you must in first send a file like audio, video pdf or text after then send the message #trranslate
+## Contributors
+- Masseck Thaw
+- Bakar Seck
+- Ahmadou Barry
+- Alain Gildas OGOU
+- Amadou Tidiane Kassa Diallo
+## Contribution  
+Feel free to contribute by opening issues or submitting pull requests.  
+
+## License  
+This project is licensed under the MIT License.
 
