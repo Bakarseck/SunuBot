@@ -24,6 +24,10 @@ transcribe_dir = Path("file_transcribed")
 upload_dir.mkdir(exist_ok=True)
 transcribe_dir.mkdir(exist_ok=True)
 
+@app.get("/model/test/")
+async def test_endpoint():
+    return {"message": "FastAPI fonctionne bien !"}
+
 @app.post("/model/upload/")
 async def upload_file(file: UploadFile = File(...)):
     # Check the file type (optional validation, customize as needed)
