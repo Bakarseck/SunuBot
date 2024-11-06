@@ -68,6 +68,7 @@ async def upload_file(file: UploadFile = File(...)):
             _transcribed_file = transcribe_dir / file.filename
             shutil.copy(file_path, _transcribed_file)
             transcribed_file = read_text_file(_transcribed_file)
+            print(content)
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type.")
     except Exception as e:
