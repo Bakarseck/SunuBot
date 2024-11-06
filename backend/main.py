@@ -9,10 +9,9 @@ import os
 
 app = FastAPI()
 
-# Allow all origins for CORS (configure as needed)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update this to specific origins in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -30,8 +29,6 @@ async def test_endpoint():
 
 @app.post("/model/upload/")
 async def upload_file(file: UploadFile = File(...)):
-    print("Received file:", file.filename)
-    print("File content type:", file.content_type)
 
     # Vérification du type de fichier
     valid_content_types = [
@@ -43,7 +40,6 @@ async def upload_file(file: UploadFile = File(...)):
     ]
 
     if file.content_type not in valid_content_types:
-        print("Invalid file type:", file.content_type)
         raise HTTPException(
             status_code=400,
             detail="Invalid file type. Only .txt, .pdf, .mp3, .wav, .mp4, and .mkv are allowed."
@@ -51,14 +47,12 @@ async def upload_file(file: UploadFile = File(...)):
 
     # Définition du chemin de sauvegarde
     file_path = upload_dir / file.filename
-    print("Saving file to:", file_path)
 
     # Enregistrement du fichier
     try:
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     except Exception as e:
-        print("Error saving file:", e)
         raise HTTPException(status_code=500, detail="Error saving file.")
 
     # Traitement en fonction du type de fichier
@@ -71,24 +65,22 @@ async def upload_file(file: UploadFile = File(...)):
             audio_file = extract_audio_from_video(str(file_path))
             transcribed_file = audio_to_text(audio_file)
         elif file.content_type == "text/plain":
-            transcribed_file = transcribe_dir / file.filename
+            _transcribed_file = transcribe_dir / file.filename
             shutil.copy(file_path, transcribed_file)
-            print(f"Text file saved directly in {transcribed_file}")
+            transcribed_file = read_text_file(_transcribed_file)
+            print(transcribe_dir)
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type.")
     except Exception as e:
-        print("Error processing file:", e)
         raise HTTPException(status_code=500, detail="Error processing file.")
 
     # Génération du résumé
     try:
-        print(transcribed_file)
         summarized_text = summerize(str(transcribed_file))
     except Exception as e:
-        print("Error summarizing text:", e)
+        
         raise HTTPException(status_code=500, detail="Error summarizing text.")
 
-    print("File processed successfully:", file.filename)
     return {
         "filename": file.filename,
         "message": "File uploaded and processed successfully",
@@ -96,13 +88,4 @@ async def upload_file(file: UploadFile = File(...)):
         "summarized_text": summarized_text
     }
 
-
-#audio = extract_audio_from_video("upload_files/video.mp4")
-#content = audio_to_text("file_transcribed/video.mp3")
-#content = pdf_to_text("upload_files/fi_dew.pdf")
-# audio = extraire_audio("audio/video.mp4", "audio/audio_t.mp3")
-#text = transcrire_audio("audio/hymne_SN.mp3")
-#print("traytuwd: ", text.text)
-#summ = summerize(text.text)
-#print(summ)
 

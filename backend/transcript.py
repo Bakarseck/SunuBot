@@ -14,6 +14,12 @@ def extract_audio_from_video(video_file):
     print(f"Audio extracted and saved in {file}")
     return file
 
+def read_text_file(file_path):
+    """Lit le contenu d'un fichier texte et le retourne sous forme de chaîne de caractères."""
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
+    return content
+
 def audio_to_text(audio_file):
     with open(audio_file, "rb") as file:
         transcription = openai.Audio.transcribe("whisper-1", file)    
