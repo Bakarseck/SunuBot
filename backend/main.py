@@ -9,7 +9,6 @@ import os
 
 app = FastAPI()
 
-# Allow all origins for CORS (configure as needed)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -66,8 +65,9 @@ async def upload_file(file: UploadFile = File(...)):
             audio_file = extract_audio_from_video(str(file_path))
             transcribed_file = audio_to_text(audio_file)
         elif file.content_type == "text/plain":
-            transcribed_file = transcribe_dir / file.filename
-            shutil.copy(file_path, transcribed_file)
+            _transcribed_file = transcribe_dir / file.filename
+            shutil.copy(file_path, _transcribed_file)
+            transcribed_file = read_text_file(_transcribed_file)
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type.")
     except Exception as e:
