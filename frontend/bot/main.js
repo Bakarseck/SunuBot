@@ -121,6 +121,7 @@ async function sendFileToAPI(filePath, mimeType) {
         return response.data; // Retourne la réponse de l'API (inclut le résumé et d'autres détails)
     } catch (error) {
         console.error('Error sending file to API:', error.message);
+        console.error('Full error:', error);
     }
 }
 

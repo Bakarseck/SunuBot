@@ -30,7 +30,10 @@ async def test_endpoint():
 
 @app.post("/model/upload/")
 async def upload_file(file: UploadFile = File(...)):
-    # Check the file type (optional validation, customize as needed)
+    print("Received file:", file.filename)
+    print("File content type:", file.content_type)
+
+    # Vérification du type de fichier
     valid_content_types = [
         "text/plain",
         "application/pdf",
@@ -40,40 +43,51 @@ async def upload_file(file: UploadFile = File(...)):
     ]
 
     if file.content_type not in valid_content_types:
+        print("Invalid file type:", file.content_type)
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail="Invalid file type. Only .txt, .pdf, .mp3, .wav, .mp4, and .mkv are allowed."
         )
 
-    # Define the file path
+    # Définition du chemin de sauvegarde
     file_path = upload_dir / file.filename
+    print("Saving file to:", file_path)
 
-    # Save the file to the upload directory
-    with file_path.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    # Enregistrement du fichier
+    try:
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        print("Error saving file:", e)
+        raise HTTPException(status_code=500, detail="Error saving file.")
 
-    # Process file based on content type
-    if file.content_type == "application/pdf":
-        # Call pdf_to_text for PDF files
-        transcribed_file = pdf_to_text(file_path)
-    elif file.content_type in ["audio/mpeg", "audio/wav"]:
-        # Call audio_to_text for audio files
-        transcribed_file = audio_to_text(file_path)
-    elif file.content_type in ["video/mp4", "video/x-matroska"]:
-        # Extract audio and then transcribe it for video files
-        audio_file = extract_audio_from_video(str(file_path))
-        transcribed_file = audio_to_text(audio_file)
-    elif file.content_type == "text/plain":
-        # If it's a plain text file, save it directly to file_transcribed
-        transcribed_file = transcribe_dir / file.filename
-        shutil.copy(file_path, transcribed_file)
-        print(f"Text file saved directly in {transcribed_file}")
-    else:
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid file type. Only .pdf, .mp3, .wav, .mp4, .mkv, and .txt are supported."
-        )
-    summarized_text = summerize(str(transcribed_file))
+    # Traitement en fonction du type de fichier
+    try:
+        if file.content_type == "application/pdf":
+            transcribed_file = pdf_to_text(file_path)
+        elif file.content_type in ["audio/mpeg", "audio/wav"]:
+            transcribed_file = audio_to_text(file_path)
+        elif file.content_type in ["video/mp4", "video/x-matroska"]:
+            audio_file = extract_audio_from_video(str(file_path))
+            transcribed_file = audio_to_text(audio_file)
+        elif file.content_type == "text/plain":
+            transcribed_file = transcribe_dir / file.filename
+            shutil.copy(file_path, transcribed_file)
+            print(f"Text file saved directly in {transcribed_file}")
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported file type.")
+    except Exception as e:
+        print("Error processing file:", e)
+        raise HTTPException(status_code=500, detail="Error processing file.")
+
+    # Génération du résumé
+    try:
+        summarized_text = summerize(str(transcribed_file))
+    except Exception as e:
+        print("Error summarizing text:", e)
+        raise HTTPException(status_code=500, detail="Error summarizing text.")
+
+    print("File processed successfully:", file.filename)
     return {
         "filename": file.filename,
         "message": "File uploaded and processed successfully",
