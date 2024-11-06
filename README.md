@@ -68,7 +68,7 @@ cd SunuBot
 
 4. Start the FastAPI server:  
    ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+   fastapi run main.py
    ```
 
 ### Frontend  
@@ -90,7 +90,7 @@ cd SunuBot
 ### Mobile Application  
 1. Navigate to the mobile folder:  
    ```bash
-   cd ../mobile
+   cd ../mobile/sunubot
    ```
 
 2. Install Flutter dependencies:  
@@ -106,7 +106,7 @@ cd SunuBot
 ### WhatsApp Bot  
 1. Navigate to the WhatsApp bot folder:  
    ```bash
-   cd ../whatsapp-bot
+   cd ../bot
    ```
 
 2. Install the dependencies:  
