@@ -32,11 +32,11 @@ async def test_endpoint():
 async def upload_file(file: UploadFile = File(...)):
     # Check the file type (optional validation, customize as needed)
     valid_content_types = [
-        "text/plain",         # Text files
-        "application/pdf",    # PDF files
-        "audio/mpeg",         # MP3 audio
-        "audio/wav",          # WAV audio
-        "video/mp4",          # MP4 video
+        "text/plain",
+        "application/pdf",
+        "audio/mpeg",
+        "audio/wav",
+        "video/mp4",
     ]
 
     if file.content_type not in valid_content_types:
