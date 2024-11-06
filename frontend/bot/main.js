@@ -108,7 +108,7 @@ async function sendFileToAPI(filePath, mimeType) {
             filename: filePath
         });
 
-        const response = await axios.post('${process.env.BACKEND_API}/model/upload/', form, {
+        const response = await axios.post('${process.env.BACKEND_API}//model/upload/', form, {
             headers: {
                 ...form.getHeaders(), // Include multipart/form-data headers
             },
@@ -121,7 +121,6 @@ async function sendFileToAPI(filePath, mimeType) {
         return response.data; // Retourne la réponse de l'API (inclut le résumé et d'autres détails)
     } catch (error) {
         console.error('Error sending file to API:', error.message);
-        console.error('Full error:', error);
     }
 }
 
