@@ -26,17 +26,19 @@ def audio_to_text(audio_file):
 
 def pdf_to_text(file_pdf):
     doc = fitz.open(file_pdf)  
-    file_name = get_file_name(file_pdf, "txt")  
+    file_name = get_file_name(file_pdf, "txt")
+    texte_final = ""
     with open(file_name, "w", encoding="utf-8") as file:
         for page_num in range(doc.page_count):
             page = doc.load_page(page_num)
             texte = page.get_text("text")
+            texte_final += texte + "\n\n"
             file.write(texte)
             file.write("\n\n") 
             
     doc.close()
     print(f"text of pdf is extracted and saved in {file_name}")
-    return file_name
+    return texte_final
 
 def get_file_name(path, ext):
     print(path, os.path.basename(path))
