@@ -70,7 +70,7 @@ client.on('message_create', async (msg) => {
                 msg.reply(`File ${fileName} received and sent to the API.\nSummary: ${apiResponse.summarized_text}`);
             } catch (error) {
                 console.error("Error during media handling:", error);
-                msg.reply("There was an error processing the media.");
+                msg.reply("There was an error processing the media.", error);
             }
         } else if (msg.hasMedia) {
             console.log("Media received but ignored as it lacks #translate keyword.");
@@ -108,7 +108,7 @@ async function sendFileToAPI(filePath, mimeType) {
             filename: filePath
         });
 
-        const response = await axios.post('${process.env.BACKEND_API}/model/upload/', form, {
+        const response = await axios.post('${process.env.BACKEND_API}/  model/upload/', form, {
             headers: {
                 ...form.getHeaders(), // Include multipart/form-data headers
             },
