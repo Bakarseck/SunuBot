@@ -71,14 +71,14 @@ async def upload_file(file: UploadFile = File(...)):
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type.")
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Error processing file.")
+        raise HTTPException(status_code=500, detail= f"Error processing file. {e}")
 
     # Génération du résumé
     try:
         summarized_text = summerize(str(transcribed_file))
     except Exception as e:
         
-        raise HTTPException(status_code=500, detail="Error summarizing text.")
+        raise HTTPException(status_code=500, detail=f"Error summarizing text. {e}")
 
     return {
         "filename": file.filename,

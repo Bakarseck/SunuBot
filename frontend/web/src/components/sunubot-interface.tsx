@@ -40,7 +40,7 @@ export function SunubotInterface() {
     formData.append('file', textFile);
 
     try {
-      const response = await fetch('https://e-ceddo.com/model/upload/', {
+      const response = await fetch('http://0.0.0.0:8000/model/upload/', {
         method: 'POST',
         body: formData,
       });
@@ -83,7 +83,7 @@ export function SunubotInterface() {
       formData.append('file', uploadedFile);
 
       try {
-        const response = await fetch('https://e-ceddo.com/model/upload/', {
+        const response = await fetch('http://0.0.0.0:8000/model/upload/', {
           method: 'POST',
           body: formData,
         });
